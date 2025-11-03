@@ -17,7 +17,6 @@ tables = [
     table_id        = "users_table"
     schema_file     = "schemas/users_table.json"
     cluster_fields = []
-    # No partitioning or clustering for this one
     description     = "User information"
   }
 
