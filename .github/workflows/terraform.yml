@@ -37,7 +37,7 @@ jobs:
         run: ls
 
       - name: Terraform Init
-        run: terraform -chdir=terraform-bigquery init
+        run: terraform -chdir=terraform-bigquery init -migrate-state
 
       - name: Terraform Plan
         run: terraform -chdir=terraform-bigquery plan -input=false
