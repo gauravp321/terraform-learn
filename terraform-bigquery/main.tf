@@ -50,7 +50,6 @@ resource "google_bigquery_table" "tables" {
     content {
       type                     = "DAY"
       field                    = each.value.partition_field
-      expiration_ms            = each.value.partition_expiration_ms > 0 ? each.value.partition_expiration_ms : null
     }
   }
 
