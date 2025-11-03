@@ -11,5 +11,13 @@ tables = [
     partition_type  = "TIME"
     cluster_fields  = ["country", "user_id"]
     description     = "Stores event logs"
+  },
+
+  {
+    table_id        = "users_table"
+    schema_file     = "schemas/users_table.json"
+    # No partitioning or clustering for this one
+    description     = "User information"
   }
+
 ]

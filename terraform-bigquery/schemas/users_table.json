@@ -1,0 +1,5 @@
+[
+  { "name": "user_id", "type": "STRING", "mode": "REQUIRED" },
+  { "name": "signup_date", "type": "DATE", "mode": "NULLABLE" },
+  { "name": "email", "type": "STRING", "mode": "NULLABLE" }
+]
