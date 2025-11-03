@@ -33,6 +33,9 @@ jobs:
         run: |
           echo '${{ secrets.GCP_CREDENTIALS }}' > gcp-key.json
 
+      - name: list contents
+        run: ls
+
       - name: Terraform Init
         run: terraform init
 

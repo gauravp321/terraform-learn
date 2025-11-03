@@ -1,5 +1,5 @@
-project_id       = "your-gcp-project-id"
-credentials_file = "service-account-key.json"
+project_id       = "qwiklabs-gcp-02-766ee2134776"	
+
 dataset_id       = "analytics_dataset"
 location         = "US"
 
