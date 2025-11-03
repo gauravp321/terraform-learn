@@ -23,7 +23,7 @@ tables = [
   {
     table_id      = "sales_table"
     schema_file   = "schemas/sales_table.json"
-    partition_col = "sale_date"
+    partition_field = "sale_date"
     partition_type  = "TIME"
     cluster_fields  = ["region"]
   }
