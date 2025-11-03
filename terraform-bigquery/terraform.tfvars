@@ -1,4 +1,4 @@
-project_id       = "qwiklabs-gcp-02-766ee2134776"	
+project_id       = "qwiklabs-gcp-00-69e8a21aa75c"	
 
 dataset_id       = "analytics_dataset"
 location         = "US"
