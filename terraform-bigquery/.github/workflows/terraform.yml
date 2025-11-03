@@ -42,9 +42,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false
 
-      # Optional: apply automatically on push (not PR)
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
-
-        
