@@ -1,0 +1,5 @@
+[
+  { "name": "sale_date", "type": "DATE", "mode": "REQUIRED" },
+  { "name": "region", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "amount", "type": "FLOAT", "mode": "NULLABLE" }
+]
