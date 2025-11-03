@@ -1,0 +1,5 @@
+[
+  { "name": "event_date", "type": "DATE", "mode": "REQUIRED" },
+  { "name": "user_id", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "country", "type": "STRING", "mode": "NULLABLE" }
+]
