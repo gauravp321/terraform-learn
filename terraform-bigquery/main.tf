@@ -37,11 +37,33 @@ resource "google_bigquery_table" "tables" {
   schema = file("${path.module}/${each.value.schema_file}")
 
   # Conditional Partitioning
+  # dynamic "time_partitioning" {
+  #   for_each = each.value.partition_field != null ? [1] : []
+  #   content {
+  #     type  = lookup(each.value, "partition_type", "DAY")
+  #     field = each.value.partition_field
+  #   }
+  # }
+
   dynamic "time_partitioning" {
-    for_each = each.value.partition_field != null ? [1] : []
+    for_each = each.value.partition_field == "TIME" ? [1] : []
     content {
-      type  = lookup(each.value, "partition_type", "DAY")
-      field = each.value.partition_field
+      type                     = "DAY"
+      field                    = each.value.partition_field
+      expiration_ms            = each.value.partition_expiration_ms > 0 ? ach.value.partition_expiration_ms : null
+    }
+  }
+
+  # Range partitioning (for INTEGER/DATE fields)
+  dynamic "range_partitioning" {
+    for_each = each.value.partition_field == "RANGE" ? [1] : []
+    content {
+      field                    = each.value.partition_field
+      range {
+        start                  = each.value.range_partition_start
+        end                    = each.value.range_partition_end
+        interval               = each.value.range_partition_interval
+      }
     }
   }
 

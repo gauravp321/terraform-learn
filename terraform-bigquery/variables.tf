@@ -19,6 +19,36 @@ variable "dataset_id" {
   type        = string
 }
 
+variable "partition_expiration_ms" {
+  description = "Partition expiration in milliseconds"
+  type        = number
+  default     = 0
+}
+
+variable "range_partition_start" {
+  description = "Start value for range partitioning"
+  type        = number
+  default     = 0
+}
+
+variable "range_partition_end" {
+  description = "End value for range partitioning"
+  type        = number
+  default     = 0
+}
+
+variable "range_partition_interval" {
+  description = "Interval for range partitioning"
+  type        = number
+  default     = 0
+}
+
+variable "deletion_protection" {
+  description = "Enable deletion protection"
+  type        = bool
+  default     = false
+}
+
 variable "tables" {
   description = "List of BigQuery table definitions"
   type = list(object({
