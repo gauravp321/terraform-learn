@@ -46,11 +46,4 @@ resource "google_bigquery_table" "tables" {
     }
   }
 
-  # Conditional Clustering
-  dynamic "clustering" {
-    for_each = length(lookup(each.value, "cluster_fields", [])) > 0 ? [1] : []
-    content {
-      fields = each.value.cluster_fields
-    }
-  }
 }
