@@ -46,11 +46,10 @@ resource "google_bigquery_table" "tables" {
   # }
 
   dynamic "time_partitioning" {
-    for_each = each.value.partition_field == "TIME" ? [1] : []
+    for_each = each.value.partition_type == "TIME" ? [1] : []
     content {
       type                     = "DAY"
       field                    = each.value.partition_field
-      expiration_ms            = each.value.partition_expiration_ms > 0 ? ach.value.partition_expiration_ms : null
     }
   }
 

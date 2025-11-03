@@ -8,10 +8,8 @@ tables = [
     table_id        = "events_table"
     schema_file     = "schemas/events_table.json"
     partition_field = "event_date"
-    partition_type  = "DAY"
+    partition_type  = "TIME"
     cluster_fields  = ["country", "user_id"]
     description     = "Stores event logs"
-    partition_expiration_ms = 2592000000
-
   }
 ]

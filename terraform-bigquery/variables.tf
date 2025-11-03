@@ -19,11 +19,6 @@ variable "dataset_id" {
   type        = string
 }
 
-variable "partition_expiration_ms" {
-  description = "Partition expiration in milliseconds"
-  type        = number
-  default     = 0
-}
 
 variable "range_partition_start" {
   description = "Start value for range partitioning"
@@ -58,5 +53,8 @@ variable "tables" {
     partition_field = optional(string)
     partition_type  = optional(string)
     cluster_fields  = optional(list(string))
+    range_partition_start = optional(number)
+    range_partition_end = optional(number)
+    interval = optional(number)
   }))
 }
