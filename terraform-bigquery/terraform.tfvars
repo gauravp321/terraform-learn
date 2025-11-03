@@ -11,7 +11,5 @@ tables = [
     partition_type  = "TIME"
     cluster_fields  = ["country", "user_id"]
     description     = "Stores event logs"
-    partition_expiration_ms = 2592000000
-
   }
 ]
