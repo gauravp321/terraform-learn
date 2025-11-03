@@ -17,7 +17,6 @@ terraform {
 provider "google" {
   project     = var.project_id
   region      = var.location
-  credentials = file(var.credentials_file)
 }
 
 # BigQuery Dataset
@@ -45,5 +44,7 @@ resource "google_bigquery_table" "tables" {
       field = each.value.partition_field
     }
   }
+
+  clustering = length(each.value.cluster_fields) > 0 ? each.value.cluster_fields : null
 
 }
