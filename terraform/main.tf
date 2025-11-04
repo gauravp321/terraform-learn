@@ -142,6 +142,57 @@ resource "google_storage_bucket_object" "function_source" {
 }
 
 
+resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
+  depends_on = [
+    google_project_iam_member.event-receiving,
+    google_project_iam_member.artifactregistry-reader,
+  ]
+  name = "gcf-function"
+  location = "us-east4"
+  description = "a new function"
+
+  build_config {
+    runtime     = "python311"
+    entry_point = "process_config_file" # Set the entry point in the code
+    environment_variables = {
+      BUILD_CONFIG_TEST = "build_test"
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.source-bucket.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count  = 3
+    min_instance_count = 1
+    available_memory    = "256M"
+    timeout_seconds     = 60
+    environment_variables = {
+        ENDGRID_API_KEY = "abc"
+        FROM_EMAIL       = "gauravpoojary252000@gmail.com"
+    }
+    ingress_settings = "ALLOW_INTERNAL_ONLY"
+    all_traffic_on_latest_revision = true
+    service_account_email = google_service_account.account.email
+  }
+
+  event_trigger {
+    event_type = "google.cloud.storage.object.v1.finalized"
+    retry_policy = "RETRY_POLICY_RETRY"
+    service_account_email = google_service_account.account.email
+    event_filters {
+      attribute = "bucket"
+      value = google_storage_bucket.trigger-bucket.name
+    }
+  }
+}
+
+
+#--------------------------uncommnet---------------------------
+/*
 # Cloud Function
 resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   name        = var.cloud_function_name
@@ -215,7 +266,9 @@ resource "google_eventarc_trigger" "gcs_trigger" {
     google_cloudfunctions2_function.gcs_to_bigquery
   ]
 }
+*/
 
+#-----------------------------uncomment-------------------------
 
 # Pub/Sub Topic for Eventarc transport
 # resource "google_pubsub_topic" "gcs_events" {
