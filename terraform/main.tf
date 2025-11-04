@@ -41,8 +41,8 @@ resource "google_bigquery_table" "tables" {
   dynamic "time_partitioning" {
     for_each = each.value.partition_type == "TIME" ? [1] : []
     content {
-      type                     = "DAY"
-      field                    = each.value.partition_field
+      type  = "DAY"
+      field = each.value.partition_field
     }
   }
 
@@ -50,11 +50,11 @@ resource "google_bigquery_table" "tables" {
   dynamic "range_partitioning" {
     for_each = each.value.partition_field == "RANGE" ? [1] : []
     content {
-      field                    = each.value.partition_field
+      field = each.value.partition_field
       range {
-        start                  = each.value.range_partition_start
-        end                    = each.value.range_partition_end
-        interval               = each.value.range_partition_interval
+        start    = each.value.range_partition_start
+        end      = each.value.range_partition_end
+        interval = each.value.range_partition_interval
       }
     }
   }
@@ -93,8 +93,8 @@ resource "google_project_iam_member" "storage_object_viewer" {
 }
 
 resource "google_storage_bucket" "trigger-bucket" {
-  name     = "gcf-trigger-bucket39"
-  location = "us-central1" # The trigger must be in the same location as the bucket
+  name                        = "gcf-trigger-bucket39"
+  location                    = "us-central1" # The trigger must be in the same location as the bucket
   uniform_bucket_level_access = true
 }
 
@@ -106,14 +106,14 @@ resource "google_storage_bucket" "function_source" {
 
   uniform_bucket_level_access = true
 
-#   lifecycle_rule {
-#     condition {
-#       age = 30
-#     }
-#     action {
-#       type = "Delete"
-#     }
-#   }
+  #   lifecycle_rule {
+  #     condition {
+  #       age = 30
+  #     }
+  #     action {
+  #       type = "Delete"
+  #     }
+  #   }
 
 }
 
@@ -161,14 +161,14 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     timeout_seconds       = var.cloud_function_timeout
     service_account_email = google_service_account.cloud_function_sa.email
     environment_variables = {
-        SENDGRID_API_KEY = "abc"
-        FROM_EMAIL = "gauravpoojary252000@gmail.com"
+      SENDGRID_API_KEY = "abc"
+      FROM_EMAIL       = "gauravpoojary252000@gmail.com"
 
-    #   PROJECT_ID         = var.project_id
-    #   DATASET_ID         = google_bigquery_dataset.main_dataset.dataset_id
-    #   NOTIFICATION_EMAIL = var.notification_email
-    #   SCHEMA_BUCKET      = var.schema_bucket != "" ? var.schema_bucket : var.gcs_source_bucket
-    #   SCHEMA_PATH        = var.schema_path
+      #   PROJECT_ID         = var.project_id
+      #   DATASET_ID         = google_bigquery_dataset.main_dataset.dataset_id
+      #   NOTIFICATION_EMAIL = var.notification_email
+      #   SCHEMA_BUCKET      = var.schema_bucket != "" ? var.schema_bucket : var.gcs_source_bucket
+      #   SCHEMA_PATH        = var.schema_path
 
     }
   }
@@ -180,12 +180,12 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 resource "google_eventarc_trigger" "gcs_trigger" {
   name     = var.eventarc_trigger_name
   location = var.region
-  
+
   matching_criteria {
     attribute = "type"
     value     = "google.cloud.storage.object.v1.finalized"
   }
-  
+
   matching_criteria {
     attribute = "bucket"
     value     = google_storage_bucket.trigger-bucket.name

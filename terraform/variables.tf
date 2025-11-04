@@ -40,15 +40,15 @@ variable "location" {
 variable "tables" {
   description = "List of BigQuery table definitions"
   type = list(object({
-    table_id        = string
-    description     = optional(string)
-    schema_file     = string
-    partition_field = optional(string)
-    partition_type  = optional(string)
-    cluster_fields  = optional(list(string))
+    table_id              = string
+    description           = optional(string)
+    schema_file           = string
+    partition_field       = optional(string)
+    partition_type        = optional(string)
+    cluster_fields        = optional(list(string))
     range_partition_start = optional(number)
-    range_partition_end = optional(number)
-    interval = optional(number)
+    range_partition_end   = optional(number)
+    interval              = optional(number)
   }))
 }
 
