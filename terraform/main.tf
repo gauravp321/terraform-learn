@@ -206,7 +206,7 @@ resource "google_eventarc_trigger" "gcs_trigger" {
   depends_on = [
     # google_pubsub_topic_iam_member.eventarc_publisher,
     # google_cloudfunctions2_function_iam_member.eventarc_invoker
-    google_cloudfunctions2_function.function
+    google_cloudfunctions2_function.gcs_to_bigquery
   ]
 }
 
