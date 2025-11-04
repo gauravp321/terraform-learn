@@ -85,6 +85,7 @@ resource "google_project_iam_member" "bigquery_job_user" {
   member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
 }
 
+
 resource "google_project_iam_member" "storage_object_viewer" {
   project = var.project_id
   role    = "roles/storage.objectViewer"
@@ -162,7 +163,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     environment_variables = {
         SENDGRID_API_KEY = "abc"
         FROM_EMAIL = "gauravpoojary252000@gmail.com"
-        
+
     #   PROJECT_ID         = var.project_id
     #   DATASET_ID         = google_bigquery_dataset.main_dataset.dataset_id
     #   NOTIFICATION_EMAIL = var.notification_email
