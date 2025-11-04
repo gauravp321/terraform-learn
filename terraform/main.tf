@@ -198,8 +198,12 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 
 
   service_account = data.google_service_account.cloud_function_sa_use.email
+  
   destination {
-    cloud_function = google_cloudfunctions2_function.gcs_to_bigquery.name
+    cloud_run_service {
+      service = google_cloudfunctions2_function.gcs_to_bigquery.name
+      region  = var.region
+    }
   }
 
   transport {
