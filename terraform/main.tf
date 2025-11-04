@@ -183,7 +183,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 # Note: Eventarc for GCS requires Pub/Sub transport
 
 resource "google_eventarc_trigger" "gcs_trigger" {
-  name     = var.eventarc_trigger_name
+  name     = google_storage_bucket.trigger-bucket.name
   location = var.region
 
   matching_criteria {
@@ -198,8 +198,12 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 
 
   service_account = data.google_service_account.cloud_function_sa_use.email
+  
   destination {
-    cloud_function = google_cloudfunctions2_function.gcs_to_bigquery.id
+    cloud_run_service {
+      service = google_cloudfunctions2_function.gcs_to_bigquery.name
+      region  = var.region
+    }
   }
 
   transport {
@@ -249,4 +253,3 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 data "google_project" "project" {
   project_id = var.project_id
 }
-

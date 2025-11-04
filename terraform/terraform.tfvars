@@ -1,4 +1,4 @@
-project_id = "qwiklabs-gcp-01-7087dcde9d31"
+project_id = "qwiklabs-gcp-00-a8c241b1f91f"
 location   = "US"
 
 tables = [
