@@ -65,9 +65,14 @@ resource "google_bigquery_table" "tables" {
 
 #-------------------------------------------------------------------
 
-# Service Account for Cloud Function
+# Service Account to create Cloud Function
 data "google_service_account" "cloud_function_sa" {
   account_id   = var.service_account_name
+}
+
+# SA for cloud function
+data "google_service_account" "cloud_function_sa_use" {
+  account_id   = "cloud-func-sa"
 }
 
 # IAM bindings for the service account
@@ -159,7 +164,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     min_instance_count    = var.cloud_function_min_instances
     available_memory      = var.cloud_function_memory
     timeout_seconds       = var.cloud_function_timeout
-    service_account_email = data.google_service_account.cloud_function_sa.email
+    service_account_email = data.google_service_account.cloud_function_sa_use.email
     environment_variables = {
       SENDGRID_API_KEY = "abc"
       FROM_EMAIL       = "gauravpoojary252000@gmail.com"
@@ -192,7 +197,7 @@ resource "google_eventarc_trigger" "gcs_trigger" {
   }
 
 
-  service_account = data.google_service_account.cloud_function_sa.email
+  service_account = data.google_service_account.cloud_function_sa_use.email
   destination {
     cloud_function = google_cloudfunctions2_function.gcs_to_bigquery.id
   }
