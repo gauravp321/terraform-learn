@@ -150,7 +150,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 
   build_config {
     runtime     = "python311"
-    entry_point = "process_file"
+    entry_point = "process_config_file"
     source {
       storage_source {
         bucket = google_storage_bucket.function_source.name
