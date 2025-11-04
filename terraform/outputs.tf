@@ -1,21 +1,6 @@
-output "bigquery_dataset_id" {
+output "dataset_id" {
   description = "BigQuery Dataset ID"
-  value       = google_bigquery_dataset.main_dataset.dataset_id
-}
-
-output "bigquery_dataset_location" {
-  description = "BigQuery Dataset location"
-  value       = google_bigquery_dataset.main_dataset.location
-}
-
-output "bigquery_table_id" {
-  description = "Example BigQuery Table ID"
-  value       = google_bigquery_table.example_table.table_id
-}
-
-output "bigquery_table_full_id" {
-  description = "Full BigQuery Table ID"
-  value       = "${google_bigquery_dataset.main_dataset.dataset_id}.${google_bigquery_table.example_table.table_id}"
+  value       = google_bigquery_dataset.dataset.dataset_id
 }
 
 output "cloud_function_name" {
