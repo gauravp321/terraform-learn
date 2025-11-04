@@ -1,6 +1,4 @@
 project_id = "qwiklabs-gcp-03-ecd2567694e9"
-
-dataset_id = "analytics_dataset"
 location   = "US"
 
 tables = [
@@ -32,5 +30,3 @@ tables = [
 
 cloud_function_name   = "akam"
 cloud_function_memory = "512Mi"
-
-gcs_source_bucket = "dkjlkc"
