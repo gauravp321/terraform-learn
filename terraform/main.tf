@@ -123,11 +123,13 @@ resource "random_id" "bucket_suffix" {
 }
 
 # Archive Cloud Function source code
+
 data "archive_file" "function_source" {
   type        = "zip"
   source_dir  = "${path.module}/../cloud_function"
   output_path = "${path.module}/function_source.zip"
 }
+
 
 # Upload source code to GCS
 resource "google_storage_bucket_object" "function_source" {

@@ -3,6 +3,7 @@ variable "project_id" {
   type        = string
 }
 
+
 variable "region" {
   description = "GCP Region for resources"
   type        = string
@@ -148,11 +149,6 @@ variable "pubsub_topic_name" {
   description = "Pub/Sub topic name for Eventarc"
   type        = string
   default     = "gcs-events"
-}
-
-variable "notification_email" {
-  description = "Email address for notifications"
-  type        = string
 }
 
 variable "schema_bucket" {
