@@ -137,9 +137,9 @@ variable "service_account_name" {
 #cf-bq-loader-sa@qwiklabs-gcp-03-befd9ad9ff76.iam.gserviceaccount.com
 # Eventarc Variables
 variable "eventarc_trigger_name" {
-  description = "Eventarc trigger name"
+  description = "Eventarc trigger name (optional, defaults to '{cloud_function_name}-trigger')"
   type        = string
-  default     = "gcs-to-bigquery-trigger"
+  default     = ""
 }
 
 
