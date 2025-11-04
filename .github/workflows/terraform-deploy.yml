@@ -37,11 +37,11 @@ jobs:
         run: ls
 
       - name: Terraform Init
-        run: terraform -chdir=terraform-bigquery init -migrate-state
+        run: terraform -chdir=terraform init -migrate-state
 
       - name: Terraform Plan
-        run: terraform -chdir=terraform-bigquery plan -input=false
+        run: terraform -chdir=terraform plan -var-file="terraform.tfvars"
 
       - name: Terraform Apply
         if: github.event_name == 'push'
-        run: terraform -chdir=terraform-bigquery apply -auto-approve -input=false
+        run: terraform -chdir=terraform apply -auto-approve -input=false
