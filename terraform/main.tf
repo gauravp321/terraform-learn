@@ -66,31 +66,29 @@ resource "google_bigquery_table" "tables" {
 #-------------------------------------------------------------------
 
 # Service Account for Cloud Function
-resource "google_service_account" "cloud_function_sa" {
+data "google_service_account" "cloud_function_sa" {
   account_id   = var.service_account_name
-  display_name = "Cloud Function Service Account for BigQuery Loader"
-  description  = "Service account for Cloud Function that loads data from GCS to BigQuery"
 }
 
 # IAM bindings for the service account
-resource "google_project_iam_member" "bigquery_data_editor" {
-  project = var.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
-}
+# resource "google_project_iam_member" "bigquery_data_editor" {
+#   project = var.project_id
+#   role    = "roles/bigquery.dataEditor"
+#   member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
+# }
 
-resource "google_project_iam_member" "bigquery_job_user" {
-  project = var.project_id
-  role    = "roles/bigquery.jobUser"
-  member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
-}
+# resource "google_project_iam_member" "bigquery_job_user" {
+#   project = var.project_id
+#   role    = "roles/bigquery.jobUser"
+#   member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
+# }
 
 
-resource "google_project_iam_member" "storage_object_viewer" {
-  project = var.project_id
-  role    = "roles/storage.objectViewer"
-  member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
-}
+# resource "google_project_iam_member" "storage_object_viewer" {
+#   project = var.project_id
+#   role    = "roles/storage.objectViewer"
+#   member  = "serviceAccount:${google_service_account.cloud_function_sa.email}"
+# }
 
 resource "google_storage_bucket" "trigger-bucket" {
   name                        = "gcf-trigger-bucket39"
@@ -161,7 +159,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     min_instance_count    = var.cloud_function_min_instances
     available_memory      = var.cloud_function_memory
     timeout_seconds       = var.cloud_function_timeout
-    service_account_email = google_service_account.cloud_function_sa.email
+    service_account_email = data.google_service_account.cloud_function_sa.email
     environment_variables = {
       SENDGRID_API_KEY = "abc"
       FROM_EMAIL       = "gauravpoojary252000@gmail.com"
@@ -194,7 +192,7 @@ resource "google_eventarc_trigger" "gcs_trigger" {
   }
 
 
-  service_account = google_service_account.cloud_function_sa.email
+  service_account = data.google_service_account.cloud_function_sa.email
   destination {
     cloud_function = google_cloudfunctions2_function.gcs_to_bigquery.id
   }
@@ -206,8 +204,9 @@ resource "google_eventarc_trigger" "gcs_trigger" {
   }
 
   depends_on = [
-    google_pubsub_topic_iam_member.eventarc_publisher,
-    google_cloudfunctions2_function_iam_member.eventarc_invoker
+    # google_pubsub_topic_iam_member.eventarc_publisher,
+    # google_cloudfunctions2_function_iam_member.eventarc_invoker
+    google_cloudfunctions2_function.gcs_to_bigquery
   ]
 }
 
@@ -219,27 +218,27 @@ resource "google_pubsub_topic" "gcs_events" {
 
 
 # IAM binding for Eventarc service agent to publish to Pub/Sub
-resource "google_pubsub_topic_iam_member" "eventarc_publisher" {
-  topic  = google_pubsub_topic.gcs_events.id
-  role   = "roles/pubsub.publisher"
-  member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
-}
+# resource "google_pubsub_topic_iam_member" "eventarc_publisher" {
+#   topic  = google_pubsub_topic.gcs_events.id
+#   role   = "roles/pubsub.publisher"
+#   member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
+# }
 
 # IAM binding for Eventarc to invoke Cloud Function
-resource "google_cloudfunctions2_function_iam_member" "eventarc_invoker" {
-  project        = var.project_id
-  location       = var.region
-  cloud_function = google_cloudfunctions2_function.gcs_to_bigquery.name
-  role           = "roles/cloudfunctions.invoker"
-  member         = "serviceAccount:${google_service_account.cloud_function_sa.email}"
-}
+# resource "google_cloudfunctions2_function_iam_member" "eventarc_invoker" {
+#   project        = var.project_id
+#   location       = var.region
+#   cloud_function = google_cloudfunctions2_function.gcs_to_bigquery.name
+#   role           = "roles/cloudfunctions.invoker"
+#   member         = "serviceAccount:${google_service_account.cloud_function_sa.email}"
+# }
 
 # Grant Eventarc service account necessary permissions
-resource "google_project_iam_member" "eventarc_service_agent" {
-  project = var.project_id
-  role    = "roles/eventarc.serviceAgent"
-  member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
-}
+# resource "google_project_iam_member" "eventarc_service_agent" {
+#   project = var.project_id
+#   role    = "roles/eventarc.serviceAgent"
+#   member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
+# }
 
 data "google_project" "project" {
   project_id = var.project_id

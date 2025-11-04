@@ -15,7 +15,7 @@ output "cloud_function_url" {
 
 output "service_account_email" {
   description = "Service Account email for Cloud Function"
-  value       = google_service_account.cloud_function_sa.email
+  value       = data.google_service_account.cloud_function_sa.email
 }
 
 output "eventarc_trigger_name" {

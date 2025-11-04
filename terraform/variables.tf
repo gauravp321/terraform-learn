@@ -121,6 +121,7 @@ variable "service_account_name" {
   default     = "cf-bq-loader-sa"
 }
 
+#cf-bq-loader-sa@qwiklabs-gcp-03-befd9ad9ff76.iam.gserviceaccount.com
 # Eventarc Variables
 variable "eventarc_trigger_name" {
   description = "Eventarc trigger name"
