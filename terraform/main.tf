@@ -206,13 +206,6 @@ resource "google_eventarc_trigger" "gcs_trigger" {
     }
   }
 
-  transport {
-    pubsub {
-      #topic = google_pubsub_topic.gcs_events.id
-      topic = "${var.cloud_function_name}-eventarc-topic"
-    }
-  }
-
   depends_on = [
     # google_pubsub_topic_iam_member.eventarc_publisher,
     # google_cloudfunctions2_function_iam_member.eventarc_invoker
