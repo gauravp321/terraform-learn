@@ -28,5 +28,5 @@ tables = [
 
 ]
 
-cloud_function_name   = "akam"
+cloud_function_name   = "gcs_bq_cf_deploy"
 cloud_function_memory = "512Mi"

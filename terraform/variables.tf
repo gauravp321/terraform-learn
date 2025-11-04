@@ -91,6 +91,19 @@ variable "cloud_function_name" {
   default     = "gcs-to-bigquery-loader"
 }
 
+variable "sendgrid_api_key" {
+  description = "SendGrid API key for sending emails (optional, will log emails if not provided)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "from_email" {
+  description = "Email address to send emails from (SendGrid verified sender)"
+  type        = string
+  default     = ""
+}
+
 variable "cloud_function_max_instances" {
   description = "Maximum number of Cloud Function instances"
   type        = number
