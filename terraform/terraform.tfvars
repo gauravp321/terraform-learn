@@ -6,7 +6,7 @@ location   = "US"
 tables = [
   {
     table_id        = "events_table"
-    schema_file     = "schemas/events_table.json"
+    schema_file     = "events_table.json"
     partition_field = "event_date"
     partition_type  = "TIME"
     cluster_fields  = ["country", "user_id"]
@@ -15,14 +15,14 @@ tables = [
 
   {
     table_id       = "users_table"
-    schema_file    = "schemas/users_table.json"
+    schema_file    = "users_table.json"
     cluster_fields = []
     description    = "User information"
   },
 
   {
     table_id        = "sales_table"
-    schema_file     = "schemas/sales_table.json"
+    schema_file     = "sales_table.json"
     partition_field = "sale_date"
     partition_type  = "TIME"
     cluster_fields  = ["region"]
