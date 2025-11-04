@@ -1,0 +1,4 @@
+sendgrid>=6.9.1
+functions-framework==3.*
+google-cloud-storage
+google-cloud-bigquery
