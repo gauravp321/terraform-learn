@@ -92,7 +92,7 @@ data "google_service_account" "cloud_function_sa" {
 
 resource "google_storage_bucket" "trigger-bucket" {
   name                        = "gcf-trigger-bucket39"
-  location                    = "us-central1" # The trigger must be in the same location as the bucket
+  location                    = "us-east4" # The trigger must be in the same location as the bucket
   uniform_bucket_level_access = true
 }
 
@@ -199,7 +199,8 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 
   transport {
     pubsub {
-      topic = google_pubsub_topic.gcs_events.id
+      #topic = google_pubsub_topic.gcs_events.id
+      topic = "${var.cloud_function_name}-eventarc-topic"
     }
   }
 
@@ -212,9 +213,9 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 
 
 # Pub/Sub Topic for Eventarc transport
-resource "google_pubsub_topic" "gcs_events" {
-  name = var.pubsub_topic_name
-}
+# resource "google_pubsub_topic" "gcs_events" {
+#   name = var.pubsub_topic_name
+# }
 
 
 # IAM binding for Eventarc service agent to publish to Pub/Sub
