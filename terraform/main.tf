@@ -116,6 +116,11 @@ resource "random_id" "bucket_suffix" {
   byte_length = 4
 }
 
+# Local values for computed names
+locals {
+  eventarc_trigger_name = var.eventarc_trigger_name != "" ? var.eventarc_trigger_name : "${var.cloud_function_name}-trigger"
+}
+
 # Archive Cloud Function source code
 
 data "archive_file" "function_source" {
