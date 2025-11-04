@@ -11,12 +11,6 @@ variable "region" {
 }
 
 
-# BigQuery Variables
-variable "dataset_id" {
-  description = "BigQuery Dataset ID"
-  type        = string
-}
-
 
 variable "location" {
   description = "BigQuery Dataset location"
@@ -134,10 +128,6 @@ variable "eventarc_trigger_name" {
   default     = "gcs-to-bigquery-trigger"
 }
 
-variable "gcs_source_bucket" {
-  description = "GCS bucket name to monitor for file uploads"
-  type        = string
-}
 
 variable "gcs_file_prefix" {
   description = "Optional GCS file prefix filter (e.g., 'uploads/')"

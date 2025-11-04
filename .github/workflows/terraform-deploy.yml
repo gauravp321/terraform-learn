@@ -40,7 +40,7 @@ jobs:
         run: terraform -chdir=terraform init -migrate-state
 
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -input=false
+        run: terraform -chdir=terraform plan -var-file="terraform.tfvars"
 
       - name: Terraform Apply
         if: github.event_name == 'push'
