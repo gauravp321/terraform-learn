@@ -97,7 +97,7 @@ data "google_service_account" "cloud_function_sa_use" {
 
 resource "google_storage_bucket" "trigger-bucket" {
   name                        = "gcf-trigger-bucket39"
-  location                    = "us-east4" # The trigger must be in the same location as the bucket
+  location                    = "us-east1" # The trigger must be in the same location as the bucket
   uniform_bucket_level_access = true
 }
 
