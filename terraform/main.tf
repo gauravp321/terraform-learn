@@ -109,15 +109,6 @@ resource "google_storage_bucket" "function_source" {
 
   uniform_bucket_level_access = true
 
-  #   lifecycle_rule {
-  #     condition {
-  #       age = 30
-  #     }
-  #     action {
-  #       type = "Delete"
-  #     }
-  #   }
-
 }
 
 # Random ID for bucket suffix
@@ -166,8 +157,8 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     timeout_seconds       = var.cloud_function_timeout
     service_account_email = data.google_service_account.cloud_function_sa_use.email
     environment_variables = {
-      SENDGRID_API_KEY = "abc"
-      FROM_EMAIL       = "gauravpoojary252000@gmail.com"
+      SENDGRID_API_KEY   = var.sendgrid_api_key != "" ? var.sendgrid_api_key : ""
+      FROM_EMAIL         = var.from_email != "" ? var.from_email : ""
 
       #   PROJECT_ID         = var.project_id
       #   DATASET_ID         = google_bigquery_dataset.main_dataset.dataset_id

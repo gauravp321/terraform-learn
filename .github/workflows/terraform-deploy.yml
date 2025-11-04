@@ -40,8 +40,14 @@ jobs:
         run: terraform -chdir=terraform init -migrate-state
 
       - name: Terraform Plan
+        env:
+          TF_VAR_sendgrid_api_key: ${{ secrets.SENDGRID_API_KEY }}
+          TF_VAR_from_email: ${{ secrets.FROM_EMAIL }}
         run: terraform -chdir=terraform plan -var-file="terraform.tfvars"
 
       - name: Terraform Apply
+        env:
+          TF_VAR_sendgrid_api_key: ${{ secrets.SENDGRID_API_KEY }}
+          TF_VAR_from_email: ${{ secrets.FROM_EMAIL }}
         if: github.event_name == 'push'
         run: terraform -chdir=terraform apply -auto-approve -input=false
