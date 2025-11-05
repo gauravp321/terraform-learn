@@ -168,8 +168,15 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   }
 }
 
-# Eventarc Trigger for GCS Object Finalize Events
-# Note: Eventarc for GCS requires Pub/Sub transport
+
+# Wait for Cloud Function to be fully deployed (Cloud Run service needs to be ready)
+resource "time_sleep" "wait_for_cloud_function" {
+  depends_on = [google_cloudfunctions2_function.gcs_to_bigquery]
+  create_duration = "70s"
+}
+
+
+# Eventarc Trigger for GCS Object Finalize Events Note: Eventarc for GCS requires Pub/Sub transport
 
 resource "google_eventarc_trigger" "gcs_trigger" {
   name     = google_storage_bucket.trigger-bucket.name
