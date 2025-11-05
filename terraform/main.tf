@@ -29,6 +29,11 @@ resource "google_bigquery_dataset" "dataset" {
   description = "Centralized dataset for analytics"
 }
 
+
+
+#---------------------------------old code----------------------------------------------------
+
+/*
 resource "google_bigquery_table" "tables" {
   for_each = { for t in var.tables : t.table_id => t }
 
@@ -63,7 +68,32 @@ resource "google_bigquery_table" "tables" {
 
 }
 
-#-------------------------------------------------------------------
+*/
+#------------------------------------old code-------------------------------------------------
+
+
+#------------------------------------new code-------------------------------------------------
+
+# Read the SQL file from your repo
+locals {
+  bq_sql = templatefile("${path.module}/../schemas/tables.sql",
+    {project_id = var.project_id}
+  )
+}
+
+resource "google_bigquery_job" "create_tables" {
+  job_id   = "create-bq-tables-${formatdate("YYYYMMDDhhmmss", timestamp())}"
+  project  = var.project_id
+  location = var.region
+
+  query {
+    query          = local.bq_sql
+    use_legacy_sql = false
+  }
+}
+
+#------------------------------------new code-------------------------------------------------
+
 
 # Service Account to create Cloud Function
 data "google_service_account" "cloud_function_sa" {
@@ -96,7 +126,7 @@ data "google_service_account" "cloud_function_sa_use" {
 # }
 
 resource "google_storage_bucket" "trigger-bucket" {
-  name                        = "gcf-trigger-bucket5576"
+  name                        = "eventarc-gp34"
   location                    = "us-west1" # The trigger must be in the same location as the bucket
   uniform_bucket_level_access = true
 }
@@ -121,8 +151,8 @@ locals {
   eventarc_trigger_name = var.eventarc_trigger_name != "" ? var.eventarc_trigger_name : "${var.cloud_function_name}-trigger"
 }
 
-# Archive Cloud Function source code
 
+# Archive Cloud Function source code
 data "archive_file" "function_source" {
   type        = "zip"
   source_dir  = "${path.module}/../cloud-function"
