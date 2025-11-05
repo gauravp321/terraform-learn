@@ -72,7 +72,7 @@ data "google_service_account" "cloud_function_sa" {
 
 # SA for cloud function
 data "google_service_account" "cloud_function_sa_use" {
-  account_id   = "cloud-func-sa"
+  account_id   = "cfndl-pos-files"
 }
 
 # IAM bindings for the service account
@@ -96,8 +96,8 @@ data "google_service_account" "cloud_function_sa_use" {
 # }
 
 resource "google_storage_bucket" "trigger-bucket" {
-  name                        = "gcf-trigger-bucket5976"
-  location                    = "us-central1" # The trigger must be in the same location as the bucket
+  name                        = "gcf-trigger-bucket5576"
+  location                    = "us-west1" # The trigger must be in the same location as the bucket
   uniform_bucket_level_access = true
 }
 
@@ -164,13 +164,6 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     environment_variables = {
       SENDGRID_API_KEY   = var.sendgrid_api_key != "" ? var.sendgrid_api_key : ""
       FROM_EMAIL         = var.from_email != "" ? var.from_email : ""
-
-      #   PROJECT_ID         = var.project_id
-      #   DATASET_ID         = google_bigquery_dataset.main_dataset.dataset_id
-      #   NOTIFICATION_EMAIL = var.notification_email
-      #   SCHEMA_BUCKET      = var.schema_bucket != "" ? var.schema_bucket : var.gcs_source_bucket
-      #   SCHEMA_PATH        = var.schema_path
-
     }
   }
 }
@@ -220,7 +213,7 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 # resource "google_pubsub_topic_iam_member" "eventarc_publisher" {
 #   topic  = google_pubsub_topic.gcs_events.id
 #   role   = "roles/pubsub.publisher"
-#   member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
+#   member = "serviceAccount:service-${data.google_project.project.number}@gs-project-accounts.iam.gserviceaccount.com"
 # }
 
 # IAM binding for Eventarc to invoke Cloud Function
