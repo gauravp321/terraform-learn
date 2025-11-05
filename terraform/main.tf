@@ -197,7 +197,8 @@ resource "google_eventarc_trigger" "gcs_trigger" {
   
   destination {
     cloud_run_service {
-      service = google_cloudfunctions2_function.gcs_to_bigquery.id
+      #service = google_cloudfunctions2_function.gcs_to_bigquery.name
+      service = google_cloudfunctions2_function.gcs_to_bigquery.service_config[0].service
       region  = var.region
     }
   }
