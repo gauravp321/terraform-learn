@@ -22,6 +22,11 @@ provider "google" {
 }
 
 
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
+
 # BigQuery Dataset
 resource "google_bigquery_dataset" "dataset" {
   dataset_id  = "analytics"
@@ -243,12 +248,6 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 }
 
 
-# Pub/Sub Topic for Eventarc transport
-# resource "google_pubsub_topic" "gcs_events" {
-#   name = var.pubsub_topic_name
-# }
-
-
 # IAM binding for Eventarc service agent to publish to Pub/Sub
 # resource "google_pubsub_topic_iam_member" "eventarc_publisher" {
 #   topic  = google_pubsub_topic.gcs_events.id
@@ -271,7 +270,3 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 #   role    = "roles/eventarc.serviceAgent"
 #   member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
 # }
-
-data "google_project" "project" {
-  project_id = var.project_id
-}

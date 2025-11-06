@@ -31,6 +31,7 @@ def process_config_file(cloud_event):
 
     credentials, project_id = default()
 
+    logger.info(f"Project id: {project_id}")
     logger.info(f"Processing config file: {config_file_name} from bucket: {bucket_name}")
     
 
