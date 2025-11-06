@@ -11,25 +11,11 @@ variable "region" {
 }
 
 
-
 variable "location" {
   description = "BigQuery Dataset location"
   type        = string
   default     = "US"
 }
-
-# variable "default_table_expiration_ms" {
-#   description = "Default table expiration in milliseconds"
-#   type        = number
-#   default     = null
-# }
-
-# variable "default_partition_expiration_ms" {
-#   description = "Default partition expiration in milliseconds"
-#   type        = number
-#   default     = 2592000000 # 30 days
-# }
-
 
 
 variable "tables" {
@@ -48,41 +34,6 @@ variable "tables" {
 }
 
 
-# variable "partition_type" {
-#   description = "Partition type for BigQuery table (DAY, HOUR, MONTH, YEAR)"
-#   type        = string
-#   default     = "DAY"
-# }
-
-# variable "partition_field" {
-#   description = "Field name for partitioning"
-#   type        = string
-#   default     = "load_timestamp"
-# }
-
-# variable "partition_field_type" {
-#   description = "Data type for partition field (TIMESTAMP, DATE, INTEGER)"
-#   type        = string
-#   default     = "TIMESTAMP"
-# }
-
-# variable "partition_expiration_ms" {
-#   description = "Partition expiration in milliseconds"
-#   type        = number
-#   default     = 2592000000 # 30 days
-# }
-
-# variable "require_partition_filter" {
-#   description = "Require partition filter for queries"
-#   type        = bool
-#   default     = false
-# }
-
-# variable "clustering_fields" {
-#   description = "List of fields for clustering (bucketing)"
-#   type        = list(string)
-#   default     = ["data_column_1"]
-# }
 
 # Cloud Function Variables
 variable "cloud_function_name" {
@@ -134,7 +85,6 @@ variable "service_account_name" {
   default     = "cfdl-gp-test"
 }
 
-#cf-bq-loader-sa@qwiklabs-gcp-03-befd9ad9ff76.iam.gserviceaccount.com
 # Eventarc Variables
 variable "eventarc_trigger_name" {
   description = "Eventarc trigger name (optional, defaults to '{cloud_function_name}-trigger')"
