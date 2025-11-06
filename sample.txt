@@ -9,7 +9,6 @@ on:
       - main
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
@@ -17,20 +16,22 @@ jobs:
     name: Apply Terraform to GCP
     runs-on: ubuntu-latest
 
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
+      TF_VAR_credentials_file: ${{ github.workspace }}/gcp-key.json
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - id: auth
-        uses: google-github-actions/auth@v2.0.0  
-        with:
-          workload_identity_provider: 'projects/288657159168/locations/global/workloadIdentityPools/github-cf-pool/providers/github'
-          service_account: 'cfdl-gp-test@quantiphi-test-470710.iam.gserviceaccount.com'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.9.5
+
+      - name: Write GCP credentials file
+        run: |
+          echo '${{ secrets.GCP_CREDENTIALS }}' > gcp-key.json
 
       - name: list contents
         run: ls

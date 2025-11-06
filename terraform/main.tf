@@ -99,12 +99,12 @@ resource "google_bigquery_job" "create_tables" {
 
 # Service Account to create Cloud Function
 data "google_service_account" "cloud_function_sa" {
-  account_id   = var.service_account_name
+  account_id = var.service_account_name
 }
 
 # SA for cloud function
 data "google_service_account" "cloud_function_sa_use" {
-  account_id   = "cloud-function-sa"
+  account_id = "cloud-function-sa"
 }
 
 # IAM bindings for the service account
@@ -194,8 +194,8 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     timeout_seconds       = var.cloud_function_timeout
     service_account_email = data.google_service_account.cloud_function_sa_use.email
     environment_variables = {
-      SENDGRID_API_KEY   = var.sendgrid_api_key != "" ? var.sendgrid_api_key : ""
-      FROM_EMAIL         = var.from_email != "" ? var.from_email : ""
+      SENDGRID_API_KEY = var.sendgrid_api_key != "" ? var.sendgrid_api_key : ""
+      FROM_EMAIL       = var.from_email != "" ? var.from_email : ""
     }
   }
 }
@@ -203,7 +203,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 
 # Wait for Cloud Function to be fully deployed (Cloud Run service needs to be ready)
 resource "time_sleep" "wait_for_cloud_function" {
-  depends_on = [google_cloudfunctions2_function.gcs_to_bigquery]
+  depends_on      = [google_cloudfunctions2_function.gcs_to_bigquery]
   create_duration = "30s"
 }
 
@@ -226,7 +226,7 @@ resource "google_eventarc_trigger" "gcs_trigger" {
 
 
   service_account = data.google_service_account.cloud_function_sa_use.email
-  
+
   destination {
     cloud_run_service {
       #service = google_cloudfunctions2_function.gcs_to_bigquery.name
