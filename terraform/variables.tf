@@ -7,7 +7,7 @@ variable "project_id" {
 variable "region" {
   description = "GCP Region for resources"
   type        = string
-  default     = "us-west1"
+  default     = "us-central1"
 }
 
 
@@ -131,7 +131,7 @@ variable "cloud_function_timeout" {
 variable "service_account_name" {
   description = "Service account name for Cloud Function"
   type        = string
-  default     = "cf-bq-loader-sa"
+  default     = "cfdl-gp-test"
 }
 
 #cf-bq-loader-sa@qwiklabs-gcp-03-befd9ad9ff76.iam.gserviceaccount.com

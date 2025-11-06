@@ -102,7 +102,7 @@ data "google_service_account" "cloud_function_sa" {
 
 # SA for cloud function
 data "google_service_account" "cloud_function_sa_use" {
-  account_id   = "cfndl-pos-files"
+  account_id   = "cloud-function-sa"
 }
 
 # IAM bindings for the service account
@@ -126,8 +126,8 @@ data "google_service_account" "cloud_function_sa_use" {
 # }
 
 resource "google_storage_bucket" "trigger-bucket" {
-  name                        = "eventarc-gp34"
-  location                    = "us-west1" # The trigger must be in the same location as the bucket
+  name                        = "eventarc-gp74"
+  location                    = "us-central1" # The trigger must be in the same location as the bucket
   uniform_bucket_level_access = true
 }
 
@@ -202,7 +202,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 # Wait for Cloud Function to be fully deployed (Cloud Run service needs to be ready)
 resource "time_sleep" "wait_for_cloud_function" {
   depends_on = [google_cloudfunctions2_function.gcs_to_bigquery]
-  create_duration = "70s"
+  create_duration = "30s"
 }
 
 

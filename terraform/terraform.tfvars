@@ -1,4 +1,4 @@
-project_id = "qwiklabs-gcp-04-775b17c0474f"
+project_id = "quantiphi-test-470710"
 location   = "US"
 
 tables = [
