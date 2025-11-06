@@ -31,9 +31,9 @@ resource "google_bigquery_dataset" "dataset" {
 
 
 
-#---------------------------------old code----------------------------------------------------
+#---------------------------------old code starts----------------------------------------------------
 
-/*
+
 resource "google_bigquery_table" "tables" {
   for_each = { for t in var.tables : t.table_id => t }
 
@@ -68,12 +68,13 @@ resource "google_bigquery_table" "tables" {
 
 }
 
-*/
-#------------------------------------old code-------------------------------------------------
+
+#------------------------------------old code ends-------------------------------------------------
 
 
-#------------------------------------new code-------------------------------------------------
+#------------------------------------new code starts-------------------------------------------------
 
+/*
 # Read the SQL file from your repo
 locals {
   bq_sql = templatefile("${path.module}/../schemas/tables.sql",
@@ -91,8 +92,9 @@ resource "google_bigquery_job" "create_tables" {
     use_legacy_sql = false
   }
 }
+*/
 
-#------------------------------------new code-------------------------------------------------
+#------------------------------------new code ends-------------------------------------------------
 
 
 # Service Account to create Cloud Function

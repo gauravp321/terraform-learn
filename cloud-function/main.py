@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 FROM_EMAIL = os.environ.get('FROM_EMAIL')
-
+email_flag = True
 
 @functions_framework.cloud_event
 def process_config_file(cloud_event):
@@ -214,21 +214,25 @@ def send_email_notifications(to_email, subject, content):
         status: 'success' or 'error'
     """
 
-    if not SENDGRID_API_KEY:
-        logger.error("SendGrid API key not set")
-        raise ValueError("SendGrid API key is required to send email")
+    if email_flag:
+        if not SENDGRID_API_KEY:
+            logger.error("SendGrid API key not set")
+            raise ValueError("SendGrid API key is required to send email")
+        
+        message = Mail(
+            from_email=FROM_EMAIL,
+            to_emails=to_email,
+            subject=subject,
+            html_content=content
+        )
+
+        try:
+            sg = SendGridAPIClient(SENDGRID_API_KEY)
+            response = sg.send(message)
+            logger.info(f"Email sent via SendGrid. Status: {response.status_code}")
+
+        except Exception as e:
+            logger.error(f"Error sending email notification: {str(e)}")
     
-    message = Mail(
-        from_email=FROM_EMAIL,
-        to_emails=to_email,
-        subject=subject,
-        html_content=content
-    )
-
-    try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
-        response = sg.send(message)
-        logger.info(f"Email sent via SendGrid. Status: {response.status_code}")
-
-    except Exception as e:
-        logger.error(f"Error sending email notification: {str(e)}")
+    else:
+        logger.info("Skipping email send.")
