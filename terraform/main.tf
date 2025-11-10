@@ -201,6 +201,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     environment_variables = {
       SENDGRID_API_KEY = var.sendgrid_api_key != "" ? var.sendgrid_api_key : ""
       FROM_EMAIL       = var.from_email != "" ? var.from_email : ""
+      EMAIL_ENABLED    = var.email_enabled != "" ? var.email_enabled : ""
     }
   }
 }
