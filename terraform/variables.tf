@@ -49,6 +49,12 @@ variable "sendgrid_api_key" {
   sensitive   = true
 }
 
+variable "email_enabled" {
+  description = "Email flag"
+  type        = string
+  default     = ""
+}
+
 variable "from_email" {
   description = "Email address to send emails from (SendGrid verified sender)"
   type        = string
