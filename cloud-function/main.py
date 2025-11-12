@@ -74,11 +74,11 @@ def _load_secrets(project_id: Optional[str] = None) -> None:
     
     # Get secrets from Secret Manager only
     # uncomment
-    # SENDGRID_API_KEY = _get_secret(project_id, 'POS_LOAD_SENDGRID_KEY')
-    # FROM_EMAIL = _get_secret(project_id, 'POS_LOAD_SENDGRID_FROM')
+    SENDGRID_API_KEY = _get_secret(project_id, 'POS_LOAD_SENDGRID_KEY')
+    FROM_EMAIL = _get_secret(project_id, 'POS_LOAD_SENDGRID_FROM')
 
-    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-    FROM_EMAIL = os.environ.get('FROM_EMAIL')
+    # SENDGRID_API_KEY = 'xyz'    
+    # FROM_EMAIL = 'gauravpoojary252000@gmail.com'
 
     print(FROM_EMAIL,  '    ', SENDGRID_API_KEY)
     
@@ -220,8 +220,14 @@ def validate_config(config: Dict[str, Any]) -> bool:
     #     raise ConfigValidationError(f"Missing required fields in config: {', '.join(missing_fields)}")
     
     email = config.get('email')
-    if email and not validate_email(email):
-        raise ConfigValidationError(f"Invalid email format: {email}")
+
+    if email:
+        email_list = [e.strip() for e in str(email).split(',') if e.strip()]
+        #email = email_list[0] if email_list else None  
+
+    for email_id in email_list: 
+        if email_id and not validate_email(email_id):
+            raise ConfigValidationError(f"Invalid email format: {email_id}")
     
     dataset_id = config.get('dataset')
     if not validate_dataset_name(dataset_id):
@@ -570,6 +576,7 @@ def move_file_safely(
     storage_client: storage.Client,
     bucket_name: str,
     source_path: str,
+    dest_bucket: str,
     dest_path: str,
     operation_name: str
 ) -> None:
@@ -577,14 +584,15 @@ def move_file_safely(
     try:
         bucket = storage_client.bucket(bucket_name)
         source_blob = bucket.blob(source_path)
-        
+        dest_bucket = storage_client.bucket(dest_bucket)
+
         if not source_blob.exists():
             logger.warning(f"Source file does not exist: {source_path}, skipping move")
             return
         
         # Copy to destination
         try:
-            dest_blob = bucket.copy_blob(source_blob, bucket, dest_path)
+            dest_blob = bucket.copy_blob(source_blob, dest_bucket, dest_path)
         except Forbidden:
             raise PermissionError(f"Permission denied copying file to {dest_path}")
         except (ConnectionError, TimeoutError, GoogleCloudError) as e:
@@ -611,7 +619,7 @@ def move_file_safely(
 
 
 @retry_on_failure(max_retries=1, delay=5)
-def send_email_notifications(to_email: str, subject: str, content: str, is_error: bool = False, project_id: Optional[str] = None) -> None:
+def send_email_notifications(to_email: list, subject: str, content: str, is_error: bool = False, project_id: Optional[str] = None) -> None:
     """
     Send email notification about the Cloud Function execution status.
     """
@@ -628,6 +636,7 @@ def send_email_notifications(to_email: str, subject: str, content: str, is_error
     except SecretError as e:
         logger.error(f"Secret validation failed: {str(e)}")
         raise SecretError("Secret validation failed from Secret Manager")
+    
     
     message = Mail(
         from_email=FROM_EMAIL,
@@ -733,9 +742,17 @@ def process_config_file(cloud_event):
         
         data_file_name = config_file_name.split('/')[-1].removesuffix("_config.json")
         
+        # email = config.get('email')
+        # if email and not validate_email(email):
+        #     raise ConfigValidationError(f"Invalid email format: {email}")
+
         email = config.get('email')
-        if email and not validate_email(email):
-            raise ConfigValidationError(f"Invalid email format: {email}")
+        if email:
+            email_list = [e.strip() for e in str(email).split(',') if e.strip()]
+
+        for email_id in email_list: 
+            if email_id and not validate_email(email_id):
+                raise ConfigValidationError(f"Invalid email format: {email_id}")
     
         dataset_id = config.get('dataset')
         if not dataset_id or not validate_dataset_name(dataset_id):
@@ -844,6 +861,7 @@ def process_config_file(cloud_event):
                 storage_client,
                 data_bucket_name,
                 f"{data_file_path}{data_file_name}.csv",
+                bucket_name,
                 processed_data_path,
                 "data file processing"
             )
@@ -856,6 +874,7 @@ def process_config_file(cloud_event):
                 storage_client,
                 bucket_name,
                 config_file_name,
+                bucket_name,
                 processed_config_path,
                 "config file processing"
             )
@@ -882,11 +901,11 @@ def process_config_file(cloud_event):
 
             try:
                 # Use fallback email logic
-                recipient_email = email if email else FROM_EMAIL
-                if not recipient_email:
+                # recipient_email = email if email else FROM_EMAIL
+                if not email_list:
                     logger.error(f"No recipient email (config or FROM_EMAIL) found. Cannot send cleanup failure warning.")
                 else:
-                    send_email_notifications(recipient_email, subject, body, is_error=True, project_id=project_id)
+                    send_email_notifications(email_list, subject, body, is_error=True, project_id=project_id)
             except Exception as email_e:
                 logger.error(f"CRITICAL: Failed to send cleanup failure notification: {str(email_e)}")
                 logger.error(f"Original file move error was: {str(e)}")
@@ -903,7 +922,7 @@ def process_config_file(cloud_event):
             </body>
             </html>"""
         
-        send_email_notifications(email, subject, body, is_error=False, project_id=project_id)
+        send_email_notifications(email_list, subject, body, is_error=False, project_id=project_id)
         
         logger.info(f"Successfully completed processing: {config_file_name}")
         
@@ -942,7 +961,7 @@ def process_config_file(cloud_event):
             if not recipient_email:
                 logger.error(f"No recipient email (from config or FROM_EMAIL) to send failure notification.")
             else:
-                send_email_notifications(recipient_email, subject, body, is_error=True, project_id=project_id)
+                send_email_notifications(email_list, subject, body, is_error=True, project_id=project_id)
         except Exception as email_e:
             logger.error(f"CRITICAL: Failed to send failure notification: {str(email_e)}")
             logger.error(f"Original error was: {error_msg}")
@@ -982,7 +1001,7 @@ def process_config_file(cloud_event):
             if not recipient_email:
                 logger.error(f"No recipient email (from config or FROM_EMAIL) to send failure notification.")
             else:
-                send_email_notifications(recipient_email, subject, body, is_error=True, project_id=project_id)
+                send_email_notifications(email_list, subject, body, is_error=True, project_id=project_id)
 
         except Exception as email_e:
             # CRITICAL: Log the email-sending error, but do not re-raise.
